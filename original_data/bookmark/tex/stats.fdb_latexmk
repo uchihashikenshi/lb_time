@@ -1,0 +1,10 @@
+# Fdb version 3
+["pdflatex"] 1432522861 "stats.tex" "stats.pdf" "stats" 1432522862
+  "/usr/local/texlive/2014/texmf-dist/tex/latex/base/article.cls" 1399675188 20496 66dd832c447553f6776fbeac03bb0580 ""
+  "/usr/local/texlive/2014/texmf-dist/tex/latex/base/size10.clo" 1399675188 8967 546f1b177fd18efd7ad74d77a7bdac64 ""
+  "stats.aux" 1432522862 97 616681a1a95d43d6f66d32b707a3862f ""
+  "stats.tex" 1432522859 754 dd1478e64b370e0a074c7337f03acc18 ""
+  (generated)
+  "stats.pdf"
+  "stats.log"
+  "stats.aux"
