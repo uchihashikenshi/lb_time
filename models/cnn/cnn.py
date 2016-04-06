@@ -12,7 +12,7 @@ import chainer.links as L
 from chainer import optimizers
 from chainer import serializers
 
-import net
+import cnn_net
 
 class CNN():
 
@@ -35,7 +35,7 @@ class CNN():
         test_x = test_x.reshape(N_test, 1, 1, data_dim)
 
         # Prepare multi-layer perceptron model, defined in net.py
-        model = L.Classifier(net.tsCNN_net(data_dim))
+        model = L.Classifier(cnn_net.tsCNN_net(data_dim))
 
         # Setup optimizer
         optimizer = optimizers.Adam()
