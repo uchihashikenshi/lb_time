@@ -60,7 +60,7 @@ class LocalBayes():
         return nn_dist_ls, nn_ts_ls
 
 
-    def cal_prediction_nearest_n(self, nn_ts_ls, learner_name_ls, model_dict):
+    def cal_prediction_nearest_n(self, test_data, nn_ts_ls, learner_name_ls, model_dict):
         """
         todo: local_bayes_predictと被ってる・・・
         :param nn_ts_ls: Nearest n data. Must be numpy.array object.
@@ -81,20 +81,20 @@ class LocalBayes():
 
             nn_pred_dict.update({'%s' % learner:pred})
 
-        return 0
+        return nn_pred_dict
 
 
-    def local_bayes_estimation(self, pred_proba_ls, learner_name_ls):
+    def local_bayes_estimation(self, pred_proba_dict, learner_name_ls):
 
         problem = pulp.LpProblem('localbayes', pulp.LpMaximize)
         var = pulp.LpVariable.dicts('w', (learner_name_ls), 0, 1, 'Continuous')
 
         ## objective
-        for j in six.moves.range(20):
+        for i in six.moves.range(20):
             model_sum = 0
 
-            for i, learner in enumerate(learner_name_ls):
-                model_sum += var[learner] * math.log(pred_proba_ls[i][j] + 0.000000001)
+            for learner in learner_name_ls:
+                model_sum += var[learner] * math.log(pred_proba_dict[learner][i] + 0.000000001)
 
             problem += model_sum
 
