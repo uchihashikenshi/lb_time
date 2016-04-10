@@ -20,12 +20,13 @@ from chainer import Link, Chain, ChainList
 
 class LocalBayes():
 
-    def __init__(self, nn_num, data_dim):
+    def __init__(self, nn_num, data_dim, max_dist):
         self.nn_num = nn_num
         self.data_dim = data_dim
+        self.max_dist = max_dist
 
 
-    def get_nearest_n(self, train, test, max_dist=50):
+    def get_nearest_n(self, train, test):
         """
         :param train: Training dataset. Must be pandas object.
         :param test: Some point of test data. Must be numpy array object.
@@ -37,8 +38,10 @@ class LocalBayes():
         te_ele = numpy.array(test).reshape(-1, 1)
 
         for i, tr_ele in enumerate(train):
-            sys.stdout.write('\r%d' % i)
-            sys.stdout.flush()
+
+            # sys.stdout.write('\r%d' % i)
+            # sys.stdout.flush()
+
             tr_ele_ls = tr_ele.tolist()
             tr_ele = numpy.array(tr_ele).reshape(-1, 1)
             dist, path = fastdtw(te_ele, tr_ele, dist=euclidean)
@@ -48,7 +51,7 @@ class LocalBayes():
                 nn_ts_ls.append(tr_ele_ls)
             elif numpy.max(nn_dist_ls) > dist:
 
-                if numpy.max(nn_dist_ls) < max_dist:
+                if numpy.max(nn_dist_ls) < self.max_dist:
                     break
 
                 max_ind = numpy.argmax(nn_dist_ls)
@@ -57,10 +60,12 @@ class LocalBayes():
             else:
                 continue
 
-        return nn_dist_ls, nn_ts_ls
+        nn_ts_array = numpy.array(nn_ts_ls)
+
+        return nn_dist_ls, nn_ts_array
 
 
-    def cal_prediction_nearest_n(self, test_data, nn_ts_ls, learner_name_ls, model_dict):
+    def cal_prediction_nearest_n(self, test_data, nn_ts_array, learner_name_ls, model_dict):
         """
         todo: local_bayes_predictと被ってる・・・
         :param nn_ts_ls: Nearest n data. Must be numpy.array object.
@@ -71,10 +76,10 @@ class LocalBayes():
         nn_pred_dict = {}
         for learner in learner_name_ls:
             if learner == 'cnn':
-                x = nn_ts_ls.reshape((self.nn_num, 1, 1, self.data_dim)).astype(numpy.float32)
-                pred = F.softmax(model_dict[learner].predictor(chainer.Variable(x))).data[0][1]
+                x = nn_ts_array.reshape((self.nn_num, 1, 1, self.data_dim)).astype(numpy.float32)
+                pred = F.softmax(model_dict['cnn'].predictor(chainer.Variable(x))).data[:, 1]
             elif learner == 'gbdt':
-                pred = numpy.squeeze(model_dict[learner].predict_proba(test_data)).tolist()[1]
+                pred = numpy.squeeze(model_dict['gbdt'].predict_proba(nn_ts_array))[:, 1]
             else:
                 print "not enough parameters"
                 break
@@ -117,14 +122,13 @@ class LocalBayes():
     def local_bayes_predict(self, test_data, learner_name_ls, w_dict, model_dict):
 
         lb_pred = 0
-
         for learner in learner_name_ls:
 
             if learner == 'cnn':
                 x = test_data.reshape((1, 1, 1, self.data_dim)).astype(numpy.float32)
                 lb_pred += w_dict[learner] * F.softmax(model_dict[learner].predictor(chainer.Variable(x))).data[0][1]
             elif learner == 'gbdt':
-                lb_pred += numpy.squeeze(model_dict[learner].predict_proba(test_data)).tolist()[1]
+                lb_pred += w_dict[learner] * numpy.squeeze(model_dict[learner].predict_proba(test_data.reshape(1, -1))).tolist()[1] ## singleデータなのでtest_data.reshape(1, -1)が必要
             else:
                 print "not enough parameters"
                 break

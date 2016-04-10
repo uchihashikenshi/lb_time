@@ -521,6 +521,39 @@
   },
   {
    "cell_type": "code",
+   "execution_count": 30,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [],
+   "source": [
+    "w_dict = localbayes.local_bayes_estimation(pred_proba_dict, learner_name_ls)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 31,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "{'cnn': 0.0, 'gbdt': 1.0}"
+      ]
+     },
+     "execution_count": 31,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "w_dict"
+   ]
+  },
+  {
+   "cell_type": "code",
    "execution_count": 32,
    "metadata": {
     "collapsed": false
@@ -534,7 +567,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 114,
+   "execution_count": 75,
    "metadata": {
     "collapsed": false
    },
@@ -542,35 +575,174 @@
     {
      "data": {
       "text/plain": [
-       "2378"
+       "0.49200461940550261"
       ]
      },
-     "execution_count": 114,
+     "execution_count": 75,
      "metadata": {},
      "output_type": "execute_result"
     }
    ],
    "source": [
-    "len(test_0_0['x'])"
+    "lb_pred = localbayes.local_bayes_predict(new_te, learner_name_ls, w_dict, model_dict)\n",
+    "lb_pred"
    ]
   },
   {
    "cell_type": "code",
-   "execution_count": 115,
+   "execution_count": 34,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "['cnn', 'gbdt']"
+      ]
+     },
+     "execution_count": 34,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "learner_name_ls"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 35,
    "metadata": {
     "collapsed": false
    },
    "outputs": [],
    "source": [
-    "train_data_num = 500\n",
-    "test_data_num = len(test_0_0['x'])\n",
-    "save_result_dir = '../results/nn_num=%s_train_data_num=%s_test_data_num=%s/' % (nn_num, train_data_num, test_data_num)\n",
-    "# os.mkdir(save_result_dir)"
+    "nn_num = 20; data_dim = 30"
    ]
   },
   {
    "cell_type": "code",
-   "execution_count": null,
+   "execution_count": 36,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "{'cnn': <chainer.links.model.classifier.Classifier at 0x11c6c03d0>,\n",
+       " 'gbdt': AdaBoostClassifier(algorithm='SAMME',\n",
+       "           base_estimator=DecisionTreeClassifier(class_weight=None, criterion='gini', max_depth=4,\n",
+       "             max_features=None, max_leaf_nodes=None, min_samples_leaf=1,\n",
+       "             min_samples_split=2, min_weight_fraction_leaf=0.0,\n",
+       "             presort=False, random_state=None, splitter='best'),\n",
+       "           learning_rate=1.0, n_estimators=5000, random_state=None)}"
+      ]
+     },
+     "execution_count": 36,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "model_dict"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 58,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [],
+   "source": [
+    "nn_ts_array = numpy.array(nn_ts_ls)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 59,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": [
+    "test_data = new_te"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 61,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [],
+   "source": [
+    "nn_pred_dict = localbayes.cal_prediction_nearest_n(test_data, nn_ts_array, learner_name_ls, model_dict)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 62,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "{'cnn': array([  2.64020846e-03,   9.30859889e-10,   9.99816835e-01,\n",
+       "          9.99430954e-01,   9.99901772e-01,   9.89068925e-01,\n",
+       "          5.60987382e-06,   1.21445731e-16,   9.23984044e-04,\n",
+       "          1.50244299e-03,   4.12090821e-03,   1.32203098e-07,\n",
+       "          9.99853134e-01,   9.99797642e-01,   9.96300161e-01,\n",
+       "          2.60827132e-03,   9.23984044e-04,   2.47404203e-02,\n",
+       "          2.00704715e-08,   3.15418630e-03], dtype=float32),\n",
+       " 'gbdt': array([ 0.49595701,  0.49632793,  0.50182167,  0.50012409,  0.50202971,\n",
+       "         0.500663  ,  0.49494919,  0.48509078,  0.49769481,  0.49882025,\n",
+       "         0.49312866,  0.494556  ,  0.50195567,  0.501563  ,  0.50099174,\n",
+       "         0.49657133,  0.49769481,  0.49734666,  0.48339357,  0.49688988])}"
+      ]
+     },
+     "execution_count": 62,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "nn_pred_dict"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 100,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [
+    {
+     "ename": "OSError",
+     "evalue": "[Errno 17] File exists: '../results/nn_num=20_train_data_num=500_test_data_num=10'",
+     "output_type": "error",
+     "traceback": [
+      "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
+      "\u001b[0;31mOSError\u001b[0m                                   Traceback (most recent call last)",
+      "\u001b[0;32m<ipython-input-100-ea89dcf5b136>\u001b[0m in \u001b[0;36m<module>\u001b[0;34m()\u001b[0m\n\u001b[1;32m      2\u001b[0m \u001b[0mtest_data_num\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0;36m10\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m      3\u001b[0m \u001b[0msave_result_dir\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0;34m'../results/nn_num=%s_train_data_num=%s_test_data_num=%s'\u001b[0m \u001b[0;34m%\u001b[0m \u001b[0;34m(\u001b[0m\u001b[0mnn_num\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mtrain_data_num\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mtest_data_num\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m----> 4\u001b[0;31m \u001b[0mos\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mmkdir\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0msave_result_dir\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m",
+      "\u001b[0;31mOSError\u001b[0m: [Errno 17] File exists: '../results/nn_num=20_train_data_num=500_test_data_num=10'"
+     ]
+    }
+   ],
+   "source": [
+    "train_data_num = 500\n",
+    "test_data_num = 10\n",
+    "save_result_dir = '../results/nn_num=%s_train_data_num=%s_test_data_num=%s' % (nn_num, train_data_num, test_data_num)\n",
+    "os.mkdir(save_result_dir)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 101,
    "metadata": {
     "collapsed": false
    },
@@ -579,7 +751,7 @@
      "name": "stdout",
      "output_type": "stream",
      "text": [
-      "15"
+      "9"
      ]
     }
    ],
@@ -589,52 +761,13 @@
     "    test_data = test_0_0['x'][i]\n",
     "    nn_dist_ls, nn_ts_array = localbayes.get_nearest_n(train_0_0['x'][:train_data_num], test_data)\n",
     "    nn_pred_dict = localbayes.cal_prediction_nearest_n(test_data, nn_ts_array, learner_name_ls, model_dict)\n",
-    "    \n",
     "    w_dict = localbayes.local_bayes_estimation(nn_pred_dict, learner_name_ls)\n",
     "    w_dict_ls.append(w_dict)\n",
-    "    \n",
     "    lb_pred = localbayes.local_bayes_predict(test_data, learner_name_ls, w_dict, model_dict)\n",
     "    lb_pred_ls.append(lb_pred)\n",
     "    \n",
     "    sys.stdout.write('\\r%d' % i)\n",
-    "    sys.stdout.flush()\n",
-    "numpy.savez(save_result_dir + 'result.npz', w=w_dict_ls, pred=lb_pred_ls)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": 110,
-   "metadata": {
-    "collapsed": true
-   },
-   "outputs": [],
-   "source": [
-    "result = numpy.load(save_result_dir + 'result.npz')"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": 113,
-   "metadata": {
-    "collapsed": false
-   },
-   "outputs": [
-    {
-     "data": {
-      "text/plain": [
-       "array([  4.92004619e-01,   5.00054838e-01,   1.35121895e-02,\n",
-       "         1.38529181e-03,   5.03695067e-01,   4.62573896e-01,\n",
-       "         9.94276583e-01,   1.00000000e+00,   7.15879786e-22,\n",
-       "         5.01461328e-01])"
-      ]
-     },
-     "execution_count": 113,
-     "metadata": {},
-     "output_type": "execute_result"
-    }
-   ],
-   "source": [
-    "result['pred']"
+    "    sys.stdout.flush()"
    ]
   },
   {
@@ -761,6 +894,540 @@
    },
    "outputs": [],
    "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 47,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": [
+    "import pulp"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 59,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": [
+    "learner_name_ls = ['cnn', 'gbdt']\n",
+    "pred_proba_ls = [cnn_pred, gbdt_pred]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 86,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": [
+    "problem = pulp.LpProblem('localbayes', pulp.LpMaximize) # 最大化する場合"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 87,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": [
+    "var = pulp.LpVariable.dicts('w', (learner_name), 0, 1, 'Continuous')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 88,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "{'cnn': w_cnn, 'gbdt': w_gbdt}"
+      ]
+     },
+     "execution_count": 88,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "var"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 89,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [],
+   "source": [
+    "## objective\n",
+    "for j in six.moves.range(20):\n",
+    "    model_sum = 0\n",
+    "    \n",
+    "    for i, learner in enumerate(learner_name):\n",
+    "        model_sum += var[learner] * math.log(pred_proba_ls[i][j] + 0.000000001)\n",
+    "        \n",
+    "    problem += model_sum\n",
+    "\n",
+    "##  constraint\n",
+    "problem_ = 0\n",
+    "\n",
+    "for learner in learner_name:\n",
+    "    problem += var[learner] >= 0\n",
+    "    problem_ += var[learner]\n",
+    "    \n",
+    "problem += problem_ == 1"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 90,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "LpAffineExpression([(w_cnn, -5.759023890876643),\n",
+       "                    (w_gbdt, -0.6993868385363117)])"
+      ]
+     },
+     "execution_count": 90,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "model_sum"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 91,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "localbayes:\n",
+       "MAXIMIZE\n",
+       "-5.75902389088*w_cnn + -0.699386838536*w_gbdt + -0.0\n",
+       "SUBJECT TO\n",
+       "_C1: w_cnn >= 0\n",
+       "\n",
+       "_C2: w_gbdt >= 0\n",
+       "\n",
+       "_C3: w_cnn + w_gbdt = 1\n",
+       "\n",
+       "VARIABLES\n",
+       "w_cnn <= 1 Continuous\n",
+       "w_gbdt <= 1 Continuous"
+      ]
+     },
+     "execution_count": 91,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "problem"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 92,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [],
+   "source": [
+    "status = problem.solve()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 93,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'Optimal'"
+      ]
+     },
+     "execution_count": 93,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "pulp.LpStatus[status]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 97,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "cnn: 0\n",
+      "gbdt: 1\n"
+     ]
+    }
+   ],
+   "source": [
+    "for learner in learner_name:\n",
+    "    print '%s: %d' % (learner, var[learner].value())"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 67,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [],
+   "source": [
+    "for i in six.moves.range(20):\n",
+    "    cnn = pred_[i] + 0.0000001\n",
+    "    gbdt = pred_proba[i][1]\n",
+    "    model_sum = var[1] * math.log(cnn) + var[2] * math.log(gbdt)\n",
+    "    problem += model_sum\n",
+    "problem += var[1] >= 0\n",
+    "problem += var[2] >= 0\n",
+    "problem += var[1] + var[2] == 1"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 68,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "localbayes:\n",
+       "MAXIMIZE\n",
+       "-16.1176042533*w_1 + -0.699505407252*w_2 + -0.0\n",
+       "SUBJECT TO\n",
+       "_C1: w_1 >= 0\n",
+       "\n",
+       "_C2: w_2 >= 0\n",
+       "\n",
+       "_C3: w_1 + w_2 = 1\n",
+       "\n",
+       "VARIABLES\n",
+       "w_1 <= 1 Continuous\n",
+       "w_2 <= 1 Continuous"
+      ]
+     },
+     "execution_count": 68,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "problem"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 69,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": [
+    "status = problem.solve()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 71,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'Optimal'"
+      ]
+     },
+     "execution_count": 71,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "pulp.LpStatus[status]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 72,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "0.0"
+      ]
+     },
+     "execution_count": 72,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "var[1].value()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 73,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "1.0"
+      ]
+     },
+     "execution_count": 73,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "var[2].value()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### generate prediction of nn train point"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 127,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [],
+   "source": [
+    "n = 20\n",
+    "data_dim = len(nn_ts_ls[0])\n",
+    "nn_ts_array = numpy.array(nn_ts_ls).reshape((n, 1, 1, data_dim))\n",
+    "pred_cnn = []\n",
+    "\n",
+    "for i in six.moves.range(n):\n",
+    "    x = np.asarray(nn_ts_array[i]).reshape((1, 1, 1, data_dim)).astype(numpy.float32)\n",
+    "    \n",
+    "    pred = F.softmax(model.predictor(chainer.Variable(x)))\n",
+    "    pred_cnn.append(pred.data[0][1])\n",
+    "    \n",
+    "pred_cnn = numpy.array(pred_cnn)\n",
+    "pred_gbdt = bdt.predict_proba(nn_ts_array.reshape(20, 30))[:, 1].astype(float32)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 128,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "array([  9.99988079e-01,   9.99928474e-01,   9.98474538e-01,\n",
+       "         6.80340047e-04,   9.99838948e-01,   9.99916911e-01,\n",
+       "         9.98352885e-01,   9.99886036e-01,   9.99996543e-01,\n",
+       "         9.99998808e-01,   1.77823881e-06,   8.33334343e-04,\n",
+       "         9.99953866e-01,   6.94811490e-07,   1.60206982e-03,\n",
+       "         9.99981165e-01,   9.78350818e-01,   2.32334484e-34,\n",
+       "         2.76201645e-05,   9.99780357e-01], dtype=float32)"
+      ]
+     },
+     "execution_count": 128,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "pred_cnn"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 129,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "array([ 0.50223386,  0.49973291,  0.50187421,  0.49409854,  0.50157022,\n",
+       "        0.50104266,  0.50086457,  0.5019697 ,  0.50106883,  0.502235  ,\n",
+       "        0.49648082,  0.49746409,  0.50287098,  0.49303561,  0.49671853,\n",
+       "        0.5024246 ,  0.50144929,  0.48345795,  0.49292389,  0.50001854], dtype=float32)"
+      ]
+     },
+     "execution_count": 129,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "pred_gbdt"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": [
+    "learner_name = ['cnn', 'gbdt']"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": [
+    "problem = pulp.LpProblem('localbayes', pulp.LpMaximize)\n",
+    "var = pulp.LpVariable.dicts('w', (learner_name_ls), 0, 1, 'Continuous')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": [
+    "for i in six.moves.range(20):\n",
+    "    cnn = pred_[i] + 0.0000001\n",
+    "    gbdt = pred_proba[i][1]\n",
+    "    model_sum = var[1] * math.log(cnn) + var[2] * math.log(gbdt)\n",
+    "    problem += model_sum"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": [
+    "for learner in learner_name:\n",
+    "    problem += var[learner] >= 0"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": [
+    "for learner in learner_name:\n",
+    "    problem += var[learner]\n",
+    "problem == 1"
+   ]
   }
  ],
  "metadata": {
