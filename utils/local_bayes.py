@@ -68,7 +68,6 @@ class LocalBayes():
         :param model_dict: Dict of trained models.
         :return:
         """
-
         nn_pred_dict = {}
         for learner in learner_name_ls:
             if learner == 'cnn':
