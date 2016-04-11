@@ -33,3 +33,15 @@ class Analysis():
 
         return pattern_x, pattern_y
 
+
+    def model_diff(self, model_pred1, model_pred2, label):
+
+        diff, sum = 0, 0
+        for pred1, pred2 in zip(model_pred1, model_pred2):
+            sum += 1
+            if pred1 == pred2:
+                diff += 1
+        diff_rate = diff / sum
+
+        return diff_rate
+
