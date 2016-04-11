@@ -2,8 +2,20 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8d330134-c04f-4467-9679-b3a41fc0d4c7" name="Default" comment="">
+<<<<<<< HEAD
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/utils/analysis.py" afterPath="$PROJECT_DIR$/utils/analysis.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ipython_notebook/localbayes.ipynb" afterPath="$PROJECT_DIR$/ipython_notebook/localbayes.ipynb" />
+=======
+<<<<<<< HEAD
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ipython_notebook/localbayes.ipynb" afterPath="$PROJECT_DIR$/ipython_notebook/localbayes.ipynb" />
+=======
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/results/nn_num=20_train_data_num=500_test_data_num=10/result.npz" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/ipython_notebook/past/localbayes.ipynb 2" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/utils/local_bayes.py" afterPath="$PROJECT_DIR$/utils/local_bayes.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ipython_notebook/localbayes.ipynb" afterPath="$PROJECT_DIR$/ipython_notebook/localbayes.ipynb" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+>>>>>>> 66bc3c9ee72361c80671a801e2be87c13ea42d31
+>>>>>>> 648fa41a0d6fe8ed0391f02bfc1b5329458b5693
     </list>
     <ignored path="lb_time.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -37,8 +49,17 @@
       <file leaf-file-name="local_bayes.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/utils/local_bayes.py">
           <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
             <state vertical-scroll-proportion="0.0">
+=======
+<<<<<<< HEAD
+            <state vertical-scroll-proportion="2.2747252">
+              <caret line="130" column="35" selection-start-line="130" selection-start-column="35" selection-end-line="130" selection-end-column="35" />
+=======
+            <state vertical-scroll-proportion="0.43890274">
+>>>>>>> 648fa41a0d6fe8ed0391f02bfc1b5329458b5693
               <caret line="92" column="0" selection-start-line="92" selection-start-column="0" selection-end-line="92" selection-end-column="0" />
+>>>>>>> 66bc3c9ee72361c80671a801e2be87c13ea42d31
               <folding>
                 <element signature="e#14#26#0" expanded="true" />
               </folding>
@@ -72,7 +93,11 @@
         <entry file="file://$PROJECT_DIR$/utils/preprocessing.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
+<<<<<<< HEAD
+              <caret line="181" column="0" selection-start-line="181" selection-start-column="0" selection-end-line="181" selection-end-column="0" />
+=======
               <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+>>>>>>> 66bc3c9ee72361c80671a801e2be87c13ea42d31
               <folding />
             </state>
           </provider>
@@ -639,6 +664,36 @@
         </state>
       </provider>
     </entry>
+<<<<<<< HEAD
+    <entry file="file://$PROJECT_DIR$/models/cnn/cnn.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="32" column="0" selection-start-line="32" selection-start-column="0" selection-end-line="32" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#37#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/utils/preprocessing.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="181" column="0" selection-start-line="181" selection-start-column="0" selection-end-line="181" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/utils/local_bayes.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="2.2747252">
+          <caret line="130" column="35" selection-start-line="130" selection-start-column="35" selection-end-line="130" selection-end-column="35" />
+          <folding>
+            <element signature="e#14#26#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+=======
     <entry file="file://$PROJECT_DIR$/utils/local_bayes.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -649,6 +704,7 @@
         </state>
       </provider>
     </entry>
+<<<<<<< HEAD
     <entry file="file://$PROJECT_DIR$/utils/analysis.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.69201994">
@@ -657,5 +713,8 @@
         </state>
       </provider>
     </entry>
+=======
+>>>>>>> 66bc3c9ee72361c80671a801e2be87c13ea42d31
+>>>>>>> 648fa41a0d6fe8ed0391f02bfc1b5329458b5693
   </component>
 </project>
