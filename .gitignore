@@ -1,5 +1,7 @@
 models/cnn/results
+models/cnn/results_past
 models/gbdt/results
+
 data/
 .idea/
 

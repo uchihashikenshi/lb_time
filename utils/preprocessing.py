@@ -45,7 +45,7 @@ class Preprocessing():
             if i == 0:
                 continue
 
-            elif 0 < i < 100001:
+            elif 0 < i < 500001:
                 if i % 1000 == 0:
                     sys.stdout.write("\r%d web page ended" % i)
                     sys.stdout.flush()
@@ -137,39 +137,46 @@ class Preprocessing():
         return category_input_ts, category_label, category_input_sum
 
 
-    def make_k_folds_data(self, x, y, k_folds=5):
+    def make_k_folds_data(self, x, y, k_folds=5, rand=False):
 
         batch_num = len(x) / k_folds
+        index_ls = range(len(x))
 
-        random_index = range(len(x))
-        random.shuffle(random_index)
+        if rand:
+            sys.stdout.write("\rrandomized")
+            sys.stdout.flush()
+            random.shuffle(index_ls)
 
         x, y = numpy.array(x), numpy.array(y)
-        train_x, train_y, test_x, test_y = [], [], [], []
+        train_x, train_y, valid_x, valid_y, test_x, test_y = [], [], [], [], [], []
 
         for k in xrange(k_folds):
-            test_index = random_index[k*batch_num:(k+1)*batch_num]
+            test_index = index_ls[k*batch_num:(k+1)*batch_num]
+            # valid_index = test_valid_index[:int(round(batch_num / 2))]
+            # test_index = test_valid_index[int(round(batch_num / 2)):]
             if k == 0:
-                train_index = random_index[batch_num:]
+                train_index = index_ls[batch_num:]
             else:
-                train_index = random_index[0:k*batch_num] + random_index[(k+1)*batch_num:]
+                train_index = index_ls[0:k*batch_num] + index_ls[(k+1)*batch_num:]
 
             train_x.append(x[train_index])
             train_y.append(y[train_index])
+            # valid_x.append(x[valid_index])
+            # valid_y.append(y[valid_index])
             test_x.append(x[test_index])
             test_y.append(y[test_index])
 
         return train_x, train_y, test_x, test_y
 
 
-    def make_test_dataset(self, x, y, save_dir, test_num=10, k_folds=5):
+    def make_test_dataset(self, x, y, save_dir, test_num=10, k_folds=5, rand=False):
         """
         実験の再現性確保のため, kfoldのcvを複数回行うデータセットを全て保存しておく.
         """
 
         for test_index in xrange(test_num):
             os.mkdir(save_dir + '%s_test' % test_index)
-            train_x, train_y, test_x, test_y = self.make_k_folds_data(x, y, k_folds)
+            train_x, train_y, test_x, test_y = self.make_k_folds_data(x, y, k_folds, rand)
 
             for k in xrange(k_folds):
                 fold_dir = save_dir + '%s_test/%s_fold/' % (test_index, k)
