@@ -3,6 +3,7 @@ models/gbdt/results
 models/cnn/results_past
 results
 local
+original_data
 data/
 .idea/
 
