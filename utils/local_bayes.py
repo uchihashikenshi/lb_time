@@ -26,14 +26,15 @@ class LocalBayes():
         self.max_dist = max_dist
 
 
-    def get_nearest_n(self, train, label, test):
+    def get_nearest_n(self, train, test):
         """
         :param train: Training dataset. Must be pandas object.
-        :param label: Training label.
         :param test: Some point of test data. Must be numpy array object.
+        :param n: Number of training data in the neighborhood of one test data point.
+        :param max_dist: Max distance between train and test.
         :return: The nearest points of training dataset (with DTW metrics).
         """
-        nn_dist_array, nn_ts_ls, nn_label_array = numpy.array([]), [], numpy.array([])
+        nn_dist_ls, nn_ts_ls = numpy.array([]), []
         te_ele = numpy.array(test).reshape(-1, 1)
 
         for i, tr_ele in enumerate(train):
@@ -45,50 +46,45 @@ class LocalBayes():
             tr_ele = numpy.array(tr_ele).reshape(-1, 1)
             dist, path = fastdtw(te_ele, tr_ele, dist=euclidean)
 
-            if len(nn_dist_array) < self.nn_num:
-                nn_dist_array = numpy.append(nn_dist_array, dist)
+            if len(nn_dist_ls) < self.nn_num:
+                nn_dist_ls = numpy.append(nn_dist_ls, dist)
                 nn_ts_ls.append(tr_ele_ls)
-                nn_label_array = numpy.append(nn_label_array, label[i])
-            elif numpy.max(nn_dist_array) > dist:
+            elif numpy.max(nn_dist_ls) > dist:
 
-                if numpy.max(nn_dist_array) < self.max_dist:
+                if numpy.max(nn_dist_ls) < self.max_dist:
                     break
 
-                max_ind = numpy.argmax(nn_dist_array)
-                nn_dist_array[max_ind] = dist
+                max_ind = numpy.argmax(nn_dist_ls)
+                nn_dist_ls[max_ind] = dist
                 nn_ts_ls[max_ind] = tr_ele_ls
-                nn_label_array[max_ind] = label[i]
             else:
                 continue
+
         nn_ts_array = numpy.array(nn_ts_ls)
 
-        return nn_dist_array, nn_ts_array, nn_label_array
+        return nn_dist_ls, nn_ts_array
 
 
-    def cal_prediction_nearest_n(self, nn_label_array, nn_ts_array, learner_name_ls, model_dict):
+    def cal_prediction_nearest_n(self, test_data, nn_ts_array, learner_name_ls, model_dict):
         """
         todo: local_bayes_predictと被ってる・・・
-        :param label: Label of nearest n data.
-        :param nn_ts_array: Nearest n data. Must be numpy.array object.
+        :param nn_ts_ls: Nearest n data. Must be numpy.array object.
         :param learner_name_ls: List of learner name. For example, cnn, gbdt, logi, and more.
         :param model_dict: Dict of trained models.
         :return:
         """
         nn_pred_dict = {}
         for learner in learner_name_ls:
-            pred_list = []
-            for i, label in enumerate(nn_label_array):
+            if learner == 'cnn':
+                x = nn_ts_array.reshape((self.nn_num, 1, 1, self.data_dim)).astype(numpy.float32)
+                pred = F.softmax(model_dict['cnn'].predictor(chainer.Variable(x))).data[:, 1]
+            elif learner == 'gbdt':
+                pred = numpy.squeeze(model_dict['gbdt'].predict_proba(nn_ts_array))[:, 1]
+            else:
+                print "not enough parameters"
+                break
 
-                if learner == 'cnn':
-                    x = nn_ts_array[i].reshape((1, 1, 1, self.data_dim)).astype(numpy.float32)
-                    pred_list.append(F.softmax(model_dict['cnn'].predictor(chainer.Variable(x))).data[:, int(label)])
-                elif learner == 'gbdt':
-                    pred_list.append(numpy.squeeze(model_dict['gbdt'].predict_proba(nn_ts_array[i]))[int(label)])
-                else:
-                    print "not enough parameters"
-                    break
-
-            nn_pred_dict.update({'%s' % learner:pred_list})
+            nn_pred_dict.update({'%s' % learner:pred})
 
         return nn_pred_dict
 

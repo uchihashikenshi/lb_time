@@ -8,32 +8,30 @@ class Analysis():
         pass
 
 
-    def find_pattern(self, ts_array, label_array, pred_proba, type='miss'):
+    def find_pattern(self, test, pred_proba, type='miss'):
 
-        N_test = label_array.shape[0]
-        pattern_x, pattern_y, pattern_ind = [], [], []
+        N_test = test['y'].shape[0]
+        pattern_x, pattern_y = [], []
 
         for i in six.moves.range(N_test):
             pred = numpy.argmax(pred_proba[i])
 
             if type == 'miss':
 
-                if pred == label_array[i]:
+                if pred == test['y'][i]:
                     continue
                 else:
-                    pattern_x.append(ts_array[i])
-                    pattern_y.append(label_array[i])
-                    pattern_ind.append(i)
+                    pattern_x.append(test['x'][i])
+                    pattern_y.append(test['y'][i])
             else:
 
-                if pred != label_array[i]:
+                if pred != test['y'][i]:
                     continue
                 else:
-                    pattern_x.append(ts_array[i])
-                    pattern_y.append(label_array[i])
-                    pattern_ind.append(i)
+                    pattern_x.append(test['x'][i])
+                    pattern_y.append(test['y'][i])
 
-        return pattern_x, pattern_y, pattern_ind
+        return pattern_x, pattern_y
 
 
     def model_diff(self, model_pred1, model_pred2, label):
